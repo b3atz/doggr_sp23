@@ -49,6 +49,7 @@
     "fastify": "^4.15.0",
     "@fastify/cors": "^8.2.1",
     "fastify-plugin": "^4.5.0",
+    "package.json": "^2.0.1",
     "mikro-orm-soft-delete": "^0.1.0"
   },
   "devDependencies": {
