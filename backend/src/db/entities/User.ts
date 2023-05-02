@@ -35,13 +35,13 @@ export class User extends BaseEntity {
 		message => message.sender,
 		{cascade: [Cascade.PERSIST, Cascade.REMOVE]}
 	)
-	sentMsgs!: Collection<Message>
+	sender!: Collection<Message>
 	
 	@OneToMany(
 		() => Message,
 		message => message.reciver,
 		
 	)
-	recivedMsgs!: Collection<Message>
+	receiver!: Collection<Message>
 
 }

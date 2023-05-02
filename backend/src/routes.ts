@@ -128,8 +128,39 @@ async function DoggrRoutes(app: FastifyInstance, _options = {}) {
 			console.error(err);
 			return reply.status(500).send(err);
 		}
-
 	});
+
+	//Routs of messages 
+	//READ all msgs sewnt to me
+	app.search("/messages", async(req,reply) => {
+		const {receiver} = req.body;
+		try{
+			const rec = await req.em.findOne(User, { receiver })
+			console.log(rec.receviedMsgs);
+			return reply.send(rec.receviedMsgs)
+		}catch(err){
+			console.error(err);
+			return reply.status(500).send(err);
+
+		}
+	});
+	//READ recived
+	app.search("/messages/sent", async(req,reply) => {
+		const {sender} = req.body;
+		try{
+			const rec = await req.em.findOne(User, { sender })
+			console.log(rec.sentMsgs);
+			return reply.send(rec.sentMsgs)
+		}catch(err){
+			console.error(err);
+			return reply.status(500).send(err);
+
+		}
+	});
+		//POST
+		//PUT
+		//DEL
+		//DEL
 }
 
 export default DoggrRoutes;
