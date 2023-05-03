@@ -4,6 +4,7 @@ import {User} from "./db/entities/User.js";
 import {Message} from "./db/entities/Message.js";
 import {ICreateUsersBody} from "./types.js";
 import Filter from "./badWordFilter.js";
+import dotenv from "dotenv";
 
 async function DoggrRoutes(app: FastifyInstance, _options = {}) {
 	if (!app) {
@@ -225,9 +226,12 @@ async function DoggrRoutes(app: FastifyInstance, _options = {}) {
 
 	});
 	//DEL
-	app.delete<{Body: { messageId: number}}>("/messages", async (req, reply) => {
-		const {messageId} = req.body;
+	app.delete<{Body: { messageId: number,password: string}}>("/messages", async (req, reply) => {
+		const {messageId, password} = req.body;
 		try{
+			if(password != process.env.ADMIN){
+				throw({statusCode:"401",error:"Not admin"})
+			}
 			const msg = await req.em.findOne(Message, { messageId })
 			await req.em.remove(msg).flush();
 			console.log(msg);
@@ -238,8 +242,8 @@ async function DoggrRoutes(app: FastifyInstance, _options = {}) {
 		}	
 	});		
 	//DEL
-	app.delete<{Body: { sender: string }}>("/messages/all", async (req, reply) => {
-		const {sender} = req.body;
+	app.delete<{Body: { sender: string,password:string }}>("/messages/all", async (req, reply) => {
+		const {sender,password} = req.body;
 		try{
 			const theUser = await req.em.findOne(User, { email:sender },
 				{populate: [
@@ -248,6 +252,9 @@ async function DoggrRoutes(app: FastifyInstance, _options = {}) {
 					"sender",
 					"receiver"
 				]});
+			if(password != process.env.ADMIN){
+				throw({statusCode:"401",error:"Not admin"})
+			}
 			
 			for (const i of theUser.sender){
 				await req.em.remove(i).flush();
