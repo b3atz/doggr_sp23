@@ -3,6 +3,7 @@ import { Match } from "./db/entities/Match.js";
 import {User} from "./db/entities/User.js";
 import {Message} from "./db/entities/Message.js";
 import {ICreateUsersBody} from "./types.js";
+import Filter from "./badWordFilter.js";
 
 async function DoggrRoutes(app: FastifyInstance, _options = {}) {
 	if (!app) {
@@ -195,6 +196,9 @@ async function DoggrRoutes(app: FastifyInstance, _options = {}) {
 				receiver: rec,
 				message: message
 			});
+			if(Filter(newMsg.message) != false){
+				throw({statusCode:"500",error:"badword"})
+			}
 			await req.em.flush();
 			console.log(newMsg);
 			return reply.send(newMsg);
