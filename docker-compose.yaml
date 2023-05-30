@@ -18,22 +18,6 @@ services:
       timeout: 5s
       retries: 5
 
-  minio:
-    container_name: minio
-    image: docker.io/bitnami/minio:latest
-    ports:
-      - "9000:9000"
-      - "9001:9001"
-    environment:
-      - MINIO_DEFAULT_BUCKETS=doggr:public
-      - MINIO_ROOT_USER=minioUser
-      - MINIO_ROOT_PASSWORD=minioPass
-      - MINIO_SERVER_ACCESS_KEY=minioUser
-      - MINIO_SERVER_SECRET_KEY=minioPass
-    volumes:
-      - minio_data:/data
-
-
   backend:
     container_name: backend
     build: ./backend/
@@ -50,10 +34,28 @@ services:
       - HOST=0.0.0.0
       - PASSWORD=password
       - NODE_ENV=development
+      - AUTH_SECRET=supersecret219340818092358
     depends_on:
       postgres:
         condition: service_healthy
 
+  minio:
+    container_name: minio
+    image: docker.io/bitnami/minio:latest
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      - MINIO_DEFAULT_BUCKETS=doggr:public
+      - MINIO_ROOT_USER=minioUser
+      - MINIO_ROOT_PASSWORD=minioPass
+      - MINIO_SERVER_ACCESS_KEY=minioUser
+      - MINIO_SERVER_SECRET_KEY=minioPass 
+    volumes:
+      - minio_data:/data
+
+
+  
 volumes:
   minio_data:
     driver: local
