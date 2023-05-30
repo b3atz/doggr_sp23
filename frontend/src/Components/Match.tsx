@@ -40,6 +40,7 @@ export const Match = () => {
 			});
 	};
 
+
 	const profile = (
 		<Profile
 			{...currentProfile}
